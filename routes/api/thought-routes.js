@@ -15,10 +15,12 @@ router
   .post(addThought);
 
 router
-  .route('/:id') // may have to change this
+  .route('/:thoughtId')
   .get(getThoughtById)
   .put(updateThought)
   .delete(deleteThought);
 
 router.route('/:thoughtId/reactions').post(addReaction);
 router.route('/:thoughId/reactions/:reactionId').delete(removeReaction);
+
+module.exports = router;

@@ -5,6 +5,10 @@ const userController = {
   getAllUsers(req, res) {
     User.find({})
       .populate({
+        path: 'friends',
+        select: '-__v'
+      })
+      .populate({
         path: 'thoughts',
         select: '-__v'
       })
@@ -20,6 +24,10 @@ const userController = {
   // get one user by id
   getUserById({ params }, res) {
     User.findOne({ _id: params.id })
+      .populate({
+        path: 'friends',
+        select: '-__v'
+      })
       .populate({
         path: 'thoughts',
         select: '-__v'
@@ -73,10 +81,10 @@ const userController = {
       .catch(err => res.status(400).json(err));
   },
 
-  addFriend({ params, body }, res) {
+  addFriend({ params }, res) {
     User.findOneAndUpdate(
       { _id: params.userId },
-      { $push: { friends: body } },
+      { $push: { friends: params.friendId } },
       { new: true, runValidators: true }
     )
       .then(dbUserData => {
