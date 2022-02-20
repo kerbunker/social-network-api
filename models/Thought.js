@@ -1,6 +1,7 @@
 const { Schema, model, Types } = require("mongoose");
 const dateFormat = require("../utils/dateFormat");
 
+// set up reaction data - only access inside thought
 const ReactionSchema = new Schema(
   {
     reactionId: {
@@ -30,6 +31,7 @@ const ReactionSchema = new Schema(
   }
 )
 
+// set up thoughts data
 const ThoughtSchema = new Schema(
   {
     thoughtText: {
@@ -47,6 +49,7 @@ const ThoughtSchema = new Schema(
       type: String,
       required: true
     },
+    // set up an array of reactions
     reactions: [ReactionSchema]
   },
   {
@@ -58,10 +61,11 @@ const ThoughtSchema = new Schema(
   }
 );
 
+// get the number of reactions in the reactions array
 ThoughtSchema.virtual("reactionCount").get(function() {
   return this.reactions.length;
 });
 
+// export the thought data
 const Thought = model("Thought", ThoughtSchema);
-
 module.exports = Thought;

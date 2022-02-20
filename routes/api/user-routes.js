@@ -1,3 +1,4 @@
+//connect to router and inport data for routes
 const router = require('express').Router();
 const {
   getAllUsers,
@@ -22,10 +23,11 @@ router
   .put(updateUser)
   .delete(deleteUser);
 
-
+// set up friend routes
 router
   .route('/:userId/friends/:friendId')
   .post(addFriend)
   .delete(removeFriend);
 
+  // export data
 module.exports = router;
