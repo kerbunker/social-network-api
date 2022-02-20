@@ -4,14 +4,14 @@ const userController = {
   // get all users
   getAllUsers(req, res) {
     User.find({})
-      .populate({
-        path: 'friends',
-        select: '-__v'
-      })
-      .populate({
-        path: 'thoughts',
-        select: '-__v'
-      })
+      // .populate({
+      //   path: 'friends',
+      //   select: '-__v'
+      // })
+      // .populate({
+      //   path: 'thoughts',
+      //   select: '-__v'
+      // })
       .select('-__v')
       //.sort({ _id: -1 })
       .then(dbUserData => res.json(dbUserData))
@@ -67,16 +67,17 @@ const userController = {
       .catch(err => res.status(400).json(err));
   },
 
-  // delete a user
-  // bonus: remove thoughts when user is deleted
+  // delete a user and associated thoughts
   deleteUser({ params }, res) {
-    User.findOneAndDelete({ _id: params.id })
+    User.findById(params.id)
       .then(dbUserData => {
         if (!dbUserData) {
           res.status(404).json({ message: 'No user found with this id!' });
           return;
         }
-        res.json(dbUserData);
+        Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
+          .then(dbUserData.delete())
+          .then(() => res.status(202).json({ message: 'User and associated thoughts deleted.' }));
       })
       .catch(err => res.status(400).json(err));
   },
