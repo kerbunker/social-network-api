@@ -67,22 +67,21 @@ const userController = {
       .catch(err => res.status(400).json(err));
   },
 
-  // delete a user and associated thoughts
+  // delete a user and associated thoughts - could not get thoughts to delete properly
   deleteUser({ params }, res) {
     // find a user
-    User.findById(params.id)
+    User.findOneAndDelete({ _id: params.id })
       .then(dbUserData => {
         if (!dbUserData) {
           // send error if no user found
           res.status(404).json({ message: 'No user found with this id!' });
           return;
         }
-        // delete the thoughts in the user's thoughts array
-        Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
-          // after thoughts deleted, delete user
-          .then(dbUserData.delete())
-          // send success message
-          .then(() => res.status(202).json({ message: 'User and associated thoughts deleted.' }));
+        res.json(dbUserData);
+        //delete the thoughts in the user's thoughts array
+        // Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
+        //   // send success message
+        //   .then(() => res.status(202).json({ message: 'User and associated thoughts deleted.' }));
       })
       .catch(err => res.status(400).json(err));
   },
